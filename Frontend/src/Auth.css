@@ -1,0 +1,116 @@
+.authPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #171717;
+}
+
+.authBox {
+    background-color: #212121;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 2rem 2rem 1.75rem;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.authBox img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    object-fit: cover;
+    margin-bottom: 0.25rem;
+}
+
+.authBox h2 {
+    color: #ececec;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.authBox > p {
+    color: #777;
+    margin: 0 0 0.5rem;
+    font-size: 0.85rem;
+}
+
+.authBox input {
+    padding: 0.7rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background-color: #2a2a2a;
+    color: #ececec;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.authBox input::placeholder {
+    color: #555;
+}
+
+.authBox input:focus {
+    border-color: rgba(255,255,255,0.25);
+}
+
+.authBox button {
+    padding: 0.7rem;
+    border-radius: 8px;
+    border: none;
+    background-color: #fff;
+    color: #111;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.25rem;
+    transition: background-color 0.15s, opacity 0.15s;
+    width: 100%;
+}
+
+.authBox button:hover {
+    background-color: #e8e8e8;
+}
+
+.authBox button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.authError {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 0;
+}
+
+.authSwitch {
+    color: #666;
+    font-size: 0.82rem;
+    text-align: center;
+    margin: 0.25rem 0 0;
+}
+
+.authSwitch span {
+    color: #aaa;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.authSwitch span:hover {
+    color: #ececec;
+}
+.authLogo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-bottom: 0.25rem;
+}
