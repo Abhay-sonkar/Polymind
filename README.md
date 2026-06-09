@@ -8,7 +8,7 @@ A full-stack AI chat application built with the MERN stack and powered by [OpenR
 
 - **Multi-model support** — swap between Gemma 4, DeepSeek, GPT-OSS, and any other OpenRouter model by changing one line
 - **Persistent threads** — conversations are saved to MongoDB, grouped by Today / Yesterday / Previous 7 Days in the sidebar
-- **JWT authentication** — secure register and login flow with bcrypt password hashing
+- **JWT authentication** — secure register(signup) and login flow with bcrypt password hashing
 - **Markdown rendering** — AI responses render with full syntax-highlighted code blocks via `react-markdown` + `rehype-highlight`
 - **Typing indicator** — animated dots while the model is responding
 - **Thread management** — create, switch, and delete conversations
