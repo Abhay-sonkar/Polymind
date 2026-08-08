@@ -23,14 +23,23 @@ const client = new OpenAI({
 // ─────────────────────────────────────────────────────────────────────────────
 const MODEL = "google/gemma-4-31b-it:free";   // ← only line you need to edit to swap models
 
-const getOpenAIAPIResponse = async (messages) => {
+const getOpenAIAPIResponse = async (messages, ragContext = "") => {
     try {
+        // NEW: when the RAG service found relevant chunks from the user's
+        // uploaded documents, fold them into the system message so the
+        // model answers using that content instead of guessing. When
+        // ragContext is empty (no docs, or service unreachable), this is
+        // identical to the original behavior.
+        const systemContent = ragContext
+            ? `You are PolyMind, a helpful AI assistant. Use the following excerpts from the user's uploaded documents to answer if relevant. If the excerpts don't contain the answer, say so and answer from general knowledge instead.\n\n${ragContext}`
+            : "You are PolyMind, a helpful AI assistant.";
+
         const completion = await client.chat.completions.create({
             model: MODEL,
             messages: [
                 {
                     role: "system",
-                    content: "You are PolyMind, a helpful AI assistant.",
+                    content: systemContent,
                 },
                 ...messages.map(m => ({
                     role: m.role,

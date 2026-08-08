@@ -4,6 +4,9 @@ Frontend/node_modules/
 Backend/node_modules/
 
 # ── Environment variables (NEVER commit these) ────────────
+# Note: .env.example files are intentionally NOT ignored — they're
+# templates with placeholder values, not real secrets, and anyone
+# cloning the repo needs them to know which vars to set.
 .env
 .env.local
 .env.development

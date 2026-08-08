@@ -16,6 +16,8 @@ const ChatPage = ({
     onSelectThread,
     onDeleteThread,   // BUG FIX #2 (cont.): accept and forward delete handler
     onSend,
+    onUpload,
+    uploadStatus,
     onSettings,
     onLogout,
 }) => {
@@ -56,6 +58,8 @@ const ChatPage = ({
 
                 <ChatInput
                     onSend={onSend}
+                    onUpload={onUpload}
+                    uploadStatus={uploadStatus}
                     model={activeModel}
                     isStreaming={isStreaming}
                     prefill={inputPrefill}

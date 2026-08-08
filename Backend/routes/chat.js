@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import Thread from "../models/Thread.js";
 // ✅ FIX (Quality): import the new generateTitle named export
 import getOpenAIAPIResponse, { generateTitle } from "../utils/openai.js";
+import { getRagContext } from "../utils/ragService.js";
 import authMiddleware from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -96,7 +97,12 @@ router.post("/chat", async (req, res) => {
             thread.messages.push({ role: "user", content: message.trim() });
         }
 
-        const assistantReply = await getOpenAIAPIResponse(thread.messages);
+        // NEW: retrieve relevant chunks from this user's uploaded documents,
+        // if any, before asking the LLM. Fails open — if the RAG service is
+        // unreachable, ragContext is just "" and chat behaves as before.
+        const { context: ragContext, sources } = await getRagContext(message.trim(), req.user.userId);
+
+        const assistantReply = await getOpenAIAPIResponse(thread.messages, ragContext);
 
         if (!assistantReply) {
             return res.status(500).json({ error: "Failed to get response from AI" });
@@ -110,7 +116,7 @@ router.post("/chat", async (req, res) => {
 
         await thread.save();
 
-        res.json({ reply: assistantReply, threadId: resolvedThreadId });
+        res.json({ reply: assistantReply, threadId: resolvedThreadId, sources });
 
     } catch (err) {
         console.error("Chat error:", err.message);

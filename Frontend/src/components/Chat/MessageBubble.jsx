@@ -22,13 +22,23 @@ export const UserMessage = ({ content }) => (
 //   • Renders only Markdown syntax — never executes raw HTML/scripts.
 //   • Gives proper code-block highlighting for technical responses.
 //   • Both packages are already listed in Frontend/package.json.
-export const AIMessage = ({ content }) => (
+export const AIMessage = ({ content, sources = [] }) => (
   <div className="pm-msg-ai">
     <div className="pm-msg-avatar" aria-label="PolyMind">PM</div>
     <div className="pm-msg-ai__body">
       <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
         {content}
       </ReactMarkdown>
+      {sources.length > 0 && (
+        <div className="pm-msg-sources">
+          Sources:{' '}
+          {sources.map((s, i) => (
+            <span key={i} className="pm-msg-source-chip">
+              {s.filename} ({Math.round(s.similarity * 100)}%)
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   </div>
 );
@@ -52,11 +62,11 @@ export const TypingIndicator = () => (
  * content: string
  */
 const MessageBubble = ({ message }) => {
-  const { role, content } = message;
+  const { role, content, sources } = message;
   const isUser = role === 'user' || role === 'u';
   return isUser
     ? <UserMessage content={content} />
-    : <AIMessage   content={content} />;
+    : <AIMessage   content={content} sources={sources} />;
 };
 
 export default MessageBubble;

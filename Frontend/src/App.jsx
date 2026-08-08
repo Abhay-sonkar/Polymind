@@ -132,7 +132,7 @@ function App() {
                 setCurrThreadId(data.threadId);
             }
 
-            setPrevChats((prev) => [...prev, { role: "assistant", content: data.reply }]);
+            setPrevChats((prev) => [...prev, { role: "assistant", content: data.reply, sources: data.sources }]);
 
             // Always refresh so sidebar order/titles stay current
             await fetchThreads();
@@ -172,6 +172,40 @@ function App() {
 
     const handleSettings = () => console.info("Settings — not yet implemented");
 
+    // NEW: called from ChatInput's paperclip button. Uploads the file to
+    // Backend's /api/upload, which forwards it to the Python RAG service.
+    // On success, drops a system-style note into the chat so the user gets
+    // feedback that indexing happened — this endpoint does NOT trigger a
+    // chat reply, it just makes the document retrievable for future messages.
+    const [uploadStatus, setUploadStatus] = useState(null); // { state: 'uploading'|'done'|'error', filename }
+
+    const handleUpload = async (file) => {
+        const token = localStorage.getItem("token");
+        setUploadStatus({ state: "uploading", filename: file.name });
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/upload`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+
+            if (res.status === 401) { handleLogout(); return; }
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Upload failed");
+
+            setUploadStatus({ state: "done", filename: file.name, chunkCount: data.chunk_count });
+
+        } catch (err) {
+            console.error("Upload error:", err);
+            setUploadStatus({ state: "error", filename: file.name, message: err.message });
+        }
+    };
+
     const providerValues = {
         prompt, setPrompt, reply, setReply,
         currThreadId, setCurrThreadId,
@@ -196,6 +230,8 @@ function App() {
                     onSelectThread={handleSelectThread}
                     onDeleteThread={handleDeleteThread}
                     onSend={handleSend}
+                    onUpload={handleUpload}
+                    uploadStatus={uploadStatus}
                     onSettings={handleSettings}
                     onLogout={handleLogout}
                 />

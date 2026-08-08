@@ -501,6 +501,14 @@ body {
   color:      rgba(255, 255, 255, 0.55);
 }
 .pm-pill-btn--icon { padding: 3px 8px; }
+.pm-pill-btn:disabled {
+  cursor:  not-allowed;
+  opacity: 0.45;
+}
+.pm-pill-btn:disabled:hover {
+  background: transparent;
+  color:      rgba(255, 255, 255, 0.32);
+}
 
 /* Send button */
 .pm-send-btn {

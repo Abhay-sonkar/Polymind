@@ -11,4 +11,6 @@ node_modules/
 venv/
 __pycache__/
 *.pyc
-.env
+
+# RAG vector store
+chroma_data/

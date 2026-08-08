@@ -13,6 +13,8 @@ import { ArrowUp, Paperclip, Globe, Cpu } from 'lucide-react';
  */
 const ChatInput = ({
   onSend,
+  onUpload,
+  uploadStatus,
   model = 'V4 Flash',
   isStreaming = false,
   prefill = '',
@@ -20,6 +22,13 @@ const ChatInput = ({
 }) => {
   const [value, setValue] = useState('');
   const inputRef = useRef(null);
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file && onUpload) onUpload(file);
+    e.target.value = ''; // allow re-selecting the same file later
+  };
 
   // Pick up the chip text from EmptyState
   useEffect(() => {
@@ -70,30 +79,41 @@ const ChatInput = ({
         <div className="pm-input-toolbar">
           <div className="pm-toolbar-left">
 
-            {/* Model selector pill */}
+            {/* Model selector pill — display-only for now; model switching isn't built yet */}
             <button
               className="pm-pill-btn"
-              title="Change model"
+              title={`Active model: ${model} (switching coming soon)`}
               aria-label={`Active model: ${model}`}
+              disabled
             >
               <Cpu size={13} aria-hidden="true" />
               Smart · {model}
             </button>
 
             {/* Attach file */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx,.txt,.md"
+              onChange={handleFileChange}
+              style={{ display: 'none' }}
+            />
             <button
               className="pm-pill-btn pm-pill-btn--icon"
               title="Attach file"
               aria-label="Attach file"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadStatus?.state === 'uploading'}
             >
               <Paperclip size={13} aria-hidden="true" />
             </button>
 
-            {/* Web search toggle */}
+            {/* Web search toggle — not implemented yet */}
             <button
               className="pm-pill-btn pm-pill-btn--icon"
-              title="Toggle web search"
-              aria-label="Toggle web search"
+              title="Web search (coming soon)"
+              aria-label="Web search (coming soon)"
+              disabled
             >
               <Globe size={13} aria-hidden="true" />
             </button>
@@ -112,6 +132,20 @@ const ChatInput = ({
         </div>
 
       </div>
+
+      {uploadStatus?.state === 'uploading' && (
+        <p className="pm-upload-status">Indexing {uploadStatus.filename}…</p>
+      )}
+      {uploadStatus?.state === 'done' && (
+        <p className="pm-upload-status">
+          {uploadStatus.filename} indexed ({uploadStatus.chunkCount} chunks) — ask me about it
+        </p>
+      )}
+      {uploadStatus?.state === 'error' && (
+        <p className="pm-upload-status pm-upload-status--error">
+          Couldn't index {uploadStatus.filename}: {uploadStatus.message}
+        </p>
+      )}
 
       <p className="pm-disclaimer">
         PolyMind can make mistakes. Verify important information.
